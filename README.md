@@ -2,7 +2,7 @@
 
 API RESTful para gerenciamento de empréstimos de livros em uma biblioteca, com controle de permissões para diferentes tipos de usuários.
 
-## 🚀 Tecnologias
+##  Tecnologias
 
 - **Node.js** + **Express** - Framework web
 - **MySQL** - Banco de dados relacional
@@ -10,19 +10,19 @@ API RESTful para gerenciamento de empréstimos de livros em uma biblioteca, com 
 - **JWT** - Autenticação e autorização
 - **bcryptjs** - Criptografia de senhas
 
-## 📋 Funcionalidades
+##  Funcionalidades
 
 ### Bibliotecário
-- ✅ Cadastrar, atualizar e remover livros
-- ✅ Aprovar/rejeitar solicitações de empréstimos
-- ✅ Aprovar devoluções
-- ✅ Visualizar todos os empréstimos
+*  Cadastrar, atualizar e remover livros
+*  Aprovar/rejeitar solicitações de empréstimos
+*  Aprovar devoluções
+*  Visualizar todos os empréstimos
 
 ### Leitor
-- ✅ Visualizar livros disponíveis
-- ✅ Solicitar empréstimos
-- ✅ Solicitar devoluções
-- ✅ Visualizar seus empréstimos
+*  Visualizar livros disponíveis
+*  Solicitar empréstimos
+*  Solicitar devoluções
+*  Visualizar seus empréstimos
 
 ## 🛠️ Instalação
 
@@ -67,7 +67,7 @@ JWT_EXPIRES_IN=7d
 ### 4. Inicie o servidor
 
 ```bash
-# Modo desenvolvimento (com auto-reload)
+# Modo desenvolvimento 
 npm run dev
 
 # Modo produção
@@ -294,7 +294,7 @@ curl -X GET http://localhost:3000/api/books \
   -H "Authorization: Bearer SEU_TOKEN_AQUI"
 ```
 
-## 📁 Estrutura do Projeto
+##  Estrutura do Projeto
 
 ```
 biblioteca_back/
@@ -324,9 +324,9 @@ biblioteca_back/
 └── README.md
 ```
 
-## 👥 Equipe
+##  Equipe
 
-Este projeto foi desenvolvido para a disciplina de [Nome da Disciplina].
+Este projeto foi desenvolvido para a disciplina de [Desenvolvimento Web].
 
 ## 📝 Licença
 

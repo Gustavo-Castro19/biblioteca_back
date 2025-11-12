@@ -2,7 +2,6 @@ const { Book } = require('../models');
 const { Op } = require('sequelize');
 
 const bookController = {
-    // Listar todos os livros (com filtros opcionais)
     getAll: async (req, res) => {
         try {
             const { titulo, autor, categoria, disponivel } = req.query;
@@ -30,13 +29,12 @@ const bookController = {
             res.json(books);
         } catch (error) {
             console.error('Erro ao buscar livros:', error);
-            res.status(500).json({
+            res.status(401).json({
                 error: 'Erro ao buscar livros.'
             });
         }
     },
 
-    // Buscar livro por ID
     getById: async (req, res) => {
         try {
             const { id } = req.params;
@@ -52,13 +50,12 @@ const bookController = {
             res.json(book);
         } catch (error) {
             console.error('Erro ao buscar livro:', error);
-            res.status(500).json({
+            res.status(401).json({
                 error: 'Erro ao buscar livro.'
             });
         }
     },
 
-    // Criar novo livro (apenas bibliotecário)
     create: async (req, res) => {
         try {
             const {
@@ -73,13 +70,12 @@ const bookController = {
                 localizacao
             } = req.body;
 
-            if (!titulo || !autor) {
+            if (!titulo || !autor ) {
                 return res.status(400).json({
                     error: 'Título e autor são obrigatórios.'
                 });
             }
 
-            // Verifica se já existe um livro com o mesmo ISBN
             if (isbn) {
                 const existingBook = await Book.findOne({ where: { isbn } });
                 if (existingBook) {
@@ -108,13 +104,12 @@ const bookController = {
             });
         } catch (error) {
             console.error('Erro ao criar livro:', error);
-            res.status(500).json({
+            res.status(401).json({
                 error: 'Erro ao cadastrar livro.'
             });
         }
     },
 
-    // Atualizar livro (apenas bibliotecário)
     update: async (req, res) => {
         try {
             const { id } = req.params;
@@ -128,7 +123,6 @@ const bookController = {
                 });
             }
 
-            // Verifica se está tentando alterar ISBN para um já existente
             if (updateData.isbn && updateData.isbn !== book.isbn) {
                 const existingBook = await Book.findOne({
                     where: {
@@ -143,7 +137,6 @@ const bookController = {
                 }
             }
 
-            // Se alterar quantidade total, ajusta a disponível proporcionalmente
             if (updateData.quantidadeTotal !== undefined) {
                 const emprestados = book.quantidadeTotal - book.quantidadeDisponivel;
                 updateData.quantidadeDisponivel = Math.max(0, updateData.quantidadeTotal - emprestados);
@@ -163,7 +156,6 @@ const bookController = {
         }
     },
 
-    // Remover livro (apenas bibliotecário)
     delete: async (req, res) => {
         try {
             const { id } = req.params;
@@ -176,7 +168,6 @@ const bookController = {
                 });
             }
 
-            // Verifica se há empréstimos ativos
             if (book.quantidadeDisponivel < book.quantidadeTotal) {
                 return res.status(400).json({
                     error: 'Não é possível remover um livro com empréstimos ativos.'
@@ -190,7 +181,7 @@ const bookController = {
             });
         } catch (error) {
             console.error('Erro ao remover livro:', error);
-            res.status(500).json({
+            res.status(401).json({
                 error: 'Erro ao remover livro.'
             });
         }

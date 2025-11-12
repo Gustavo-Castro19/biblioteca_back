@@ -52,7 +52,6 @@ const Loan = sequelize.define('Loan', {
     timestamps: true
 });
 
-// Relacionamentos
 Loan.belongsTo(User, { foreignKey: 'userId', as: 'usuario' });
 Loan.belongsTo(Book, { foreignKey: 'bookId', as: 'livro' });
 User.hasMany(Loan, { foreignKey: 'userId', as: 'emprestimos' });

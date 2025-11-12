@@ -2,7 +2,6 @@ const { Loan, Book, User } = require('../models');
 const { Op } = require('sequelize');
 
 const loanController = {
-    // Solicitar empréstimo (leitor)
     requestLoan: async (req, res) => {
         try {
             const { bookId, dataPrevistaDevolucao } = req.body;
@@ -14,7 +13,6 @@ const loanController = {
                 });
             }
 
-            // Verifica se o livro existe
             const book = await Book.findByPk(bookId);
             if (!book) {
                 return res.status(404).json({
@@ -22,14 +20,12 @@ const loanController = {
                 });
             }
 
-            // Verifica se há exemplares disponíveis
             if (book.quantidadeDisponivel <= 0) {
                 return res.status(400).json({
                     error: 'Não há exemplares disponíveis deste livro no momento.'
                 });
             }
 
-            // Verifica se o usuário já tem empréstimo ativo deste livro
             const existingLoan = await Loan.findOne({
                 where: {
                     userId,
@@ -44,7 +40,6 @@ const loanController = {
                 });
             }
 
-            // Cria a solicitação de empréstimo
             const loan = await Loan.create({
                 userId,
                 bookId,
@@ -52,7 +47,6 @@ const loanController = {
                 status: 'pendente'
             });
 
-            // Diminui a quantidade disponível
             await book.update({
                 quantidadeDisponivel: book.quantidadeDisponivel - 1
             });
@@ -70,13 +64,12 @@ const loanController = {
             });
         } catch (error) {
             console.error('Erro ao solicitar empréstimo:', error);
-            res.status(500).json({
+            res.status(401).json({
                 error: 'Erro ao solicitar empréstimo.'
             });
         }
     },
 
-    // Listar empréstimos do usuário logado
     getMyLoans: async (req, res) => {
         try {
             const userId = req.user.id;
@@ -99,13 +92,12 @@ const loanController = {
             res.json(loans);
         } catch (error) {
             console.error('Erro ao buscar empréstimos:', error);
-            res.status(500).json({
+            res.status(401).json({
                 error: 'Erro ao buscar empréstimos.'
             });
         }
     },
 
-    // Solicitar devolução (leitor)
     requestReturn: async (req, res) => {
         try {
             const { id } = req.params;
@@ -123,14 +115,12 @@ const loanController = {
                 });
             }
 
-            // Verifica se o empréstimo pertence ao usuário
             if (loan.userId !== userId) {
                 return res.status(403).json({
                     error: 'Você não tem permissão para solicitar devolução deste empréstimo.'
                 });
             }
 
-            // Verifica se o empréstimo está no status correto
             if (loan.status !== 'emprestado') {
                 return res.status(400).json({
                     error: 'Apenas empréstimos ativos podem ter devolução solicitada.'
@@ -154,7 +144,6 @@ const loanController = {
         }
     },
 
-    // Listar todos os empréstimos (bibliotecário)
     getAllLoans: async (req, res) => {
         try {
             const { status, userId, bookId } = req.query;
@@ -191,7 +180,6 @@ const loanController = {
         }
     },
 
-    // Aprovar empréstimo (bibliotecário)
     approveLoan: async (req, res) => {
         try {
             const { id } = req.params;
@@ -231,7 +219,6 @@ const loanController = {
         }
     },
 
-    // Rejeitar empréstimo (bibliotecário)
     rejectLoan: async (req, res) => {
         try {
             const { id } = req.params;
@@ -255,7 +242,6 @@ const loanController = {
                 });
             }
 
-            // Devolve a quantidade disponível
             await loan.livro.update({
                 quantidadeDisponivel: loan.livro.quantidadeDisponivel + 1
             });
@@ -271,13 +257,12 @@ const loanController = {
             });
         } catch (error) {
             console.error('Erro ao rejeitar empréstimo:', error);
-            res.status(500).json({
+            res.status(401).json({
                 error: 'Erro ao rejeitar empréstimo.'
             });
         }
     },
 
-    // Aprovar devolução (bibliotecário)
     approveReturn: async (req, res) => {
         try {
             const { id } = req.params;
@@ -300,7 +285,6 @@ const loanController = {
                 });
             }
 
-            // Aumenta a quantidade disponível
             await loan.livro.update({
                 quantidadeDisponivel: loan.livro.quantidadeDisponivel + 1
             });
@@ -315,7 +299,7 @@ const loanController = {
             });
         } catch (error) {
             console.error('Erro ao aprovar devolução:', error);
-            res.status(500).json({
+            res.status(401).json({
                 error: 'Erro ao aprovar devolução.'
             });
         }
