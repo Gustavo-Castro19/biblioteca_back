@@ -5,24 +5,31 @@ const authController = {
     // Registro de novo usuário
     register: async (req, res) => {
         try {
+            console.log('📝 Tentando registrar usuário...');
+            console.log('Dados recebidos:', req.body);
+
             const { nome, email, senha, tipo, telefone, endereco } = req.body;
 
             // Validações
             if (!nome || !email || !senha) {
+                console.log('❌ Validação falhou: campos obrigatórios faltando');
                 return res.status(400).json({
                     error: 'Nome, email e senha são obrigatórios.'
                 });
             }
 
             // Verifica se o email já existe
+            console.log('🔍 Verificando se email já existe...');
             const userExists = await User.findOne({ where: { email } });
             if (userExists) {
+                console.log('❌ Email já cadastrado');
                 return res.status(400).json({
                     error: 'Email já cadastrado.'
                 });
             }
 
             // Cria o usuário
+            console.log('➕ Criando usuário...');
             const user = await User.create({
                 nome,
                 email,
@@ -31,6 +38,8 @@ const authController = {
                 telefone,
                 endereco
             });
+
+            console.log('✅ Usuário criado com sucesso:', user.id);
 
             // Remove a senha do retorno
             const userResponse = user.toJSON();
@@ -41,9 +50,13 @@ const authController = {
                 user: userResponse
             });
         } catch (error) {
-            console.error('Erro ao registrar usuário:', error);
+            console.error('💥 ERRO DETALHADO ao registrar usuário:');
+            console.error('Message:', error.message);
+            console.error('Stack:', error.stack);
+            console.error('Full error:', error);
             res.status(500).json({
-                error: 'Erro ao cadastrar usuário.'
+                error: 'Erro ao cadastrar usuário.',
+                details: error.message
             });
         }
     },
